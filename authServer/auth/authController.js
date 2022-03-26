@@ -24,10 +24,12 @@ class authController{
         if(await User.findOne({where:{login: req.body.login}}) === null){
             
             let hashedPassword = bcrypt.hashSync(req.body.password, saltRounds);
+            let roleUser = req.body.role ? req.body.role : 'USER'
 
             createdUser = await User.create({
                 login: req.body.login,
-                password: hashedPassword
+                password: hashedPassword,
+                role: roleUser
             })
             res.json({id: createdUser.id, login: createdUser.login})
         }
@@ -47,7 +49,7 @@ class authController{
         }
         else{
             if(bcrypt.compareSync(req.body.password, findUser.password)){
-                res.json({token: generateAccessToken({login: findUser.login})})
+                res.json({token: generateAccessToken({login: findUser.login, role: findUser.role})})
             }
             else{
                 res.status(400).json({errorMessage: 'неверный пароль'})
@@ -56,9 +58,9 @@ class authController{
 
     }
 
-    async detoken(req, res){
-        console.log(req.body.token)
-        res.json(jwt.decode(req.body.token))
+    async getRole(req, res){
+        let token = req.headers.authorization.split(' ')[1]
+        res.json(jwt.decode(token))
     }
 }
 

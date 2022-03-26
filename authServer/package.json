@@ -1,7 +1,6 @@
 {
   "name": "network-of-training-centers",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -24,5 +23,7 @@
     "nodemon": "^2.0.15",
     "pg": "^8.7.3",
     "sequelize": "^6.17.0"
-  }
+  },
+  "devDependencies": {},
+  "description": ""
 }

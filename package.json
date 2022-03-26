@@ -1,0 +1,20 @@
+{
+  "name": "network-of-training-centers",
+  "version": "1.0.0",
+  "description": "## Схема сервисов",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/legendaOS/network-of-training-centers.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/legendaOS/network-of-training-centers/issues"
+  },
+  "homepage": "https://github.com/legendaOS/network-of-training-centers#readme"
+}

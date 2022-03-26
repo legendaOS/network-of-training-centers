@@ -1,39 +1,11 @@
 import express from 'express'
 import authRouter from './auth/authRouter.js'
 import settings from './settings.js'
-import {Sequelize, DataTypes} from "sequelize"
+import authInDB from './auth/db_enter.js'
 
-const sequelize = new Sequelize('postgres://postgres:postgres@localhost:5432/users_centers')
+const seqAndModel = await authInDB('postgres://postgres:postgres@localhost:5432/users_centers')
 
-try {
-    await sequelize.authenticate()
-    console.log('Соединение с БД было успешно установлено')
-  } catch (e) {
-    console.log('Невозможно выполнить подключение к БД: ', e)
-  }
-
-  const User = sequelize.define(
-    'User',
-    {
-      // Здесь определяются атрибуты модели
-      login: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true
-      },
-      password: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      }
-    },
-    {
-      createdAt: false,
-      updatedAt: false
-    }
-  )
-
-User.sync({ alter: true })
-
+console.log(seqAndModel)
 
 const authApp = express()
 
@@ -43,4 +15,4 @@ authApp.get('/', (req, res) => {res.json('ok')})
 
 authApp.listen(settings.portAuthServer, () => {console.log(`Auth server running on port ${settings.portAuthServer}`)})
 
-export default {authseq: sequelize, user: User}
+export default {user: seqAndModel.modl}
