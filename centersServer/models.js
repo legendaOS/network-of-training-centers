@@ -2,26 +2,23 @@ import pkg from 'sequelize';
 const { DataTypes} = pkg;
 
 function defineShema(sequelize){
-    
-    const User = sequelize.define(
-        'User',
+
+    const Center = sequelize.define(
+        'Center',
         {
           // Здесь определяются атрибуты модели
-          login: {
+          name: {
             type: DataTypes.STRING,
             allowNull: false,
             unique: true
           },
-          password: {
+          adress: {
             type: DataTypes.STRING,
             allowNull: false,
           },
-          role:{
+          info:{
             type: DataTypes.STRING,
-            defaultValue: 'USER'
-          },
-          fio: {
-            type: DataTypes.STRING
+            allowNull: false,
           }
         },
         {
@@ -30,9 +27,7 @@ function defineShema(sequelize){
         }
       )
 
-    return User
+    return Center
 }
-
-
 
 export default defineShema

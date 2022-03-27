@@ -1,4 +1,4 @@
-import keys from '../settings.js'
+import keys from '../../settings.js'
 import jwt from 'jsonwebtoken'
 import sequalizes from '../index.js'
 import bcrypt from 'bcrypt'
@@ -7,7 +7,7 @@ const secretJWT = keys.secretKeyJWT
 const saltRounds = keys.saltRounds
 
 function generateAccessToken(payload){
-    return jwt.sign(payload, secretJWT)
+    return jwt.sign(payload, secretJWT, { expiresIn: '1h' })
 }
 
 
@@ -24,12 +24,13 @@ class authController{
         if(await User.findOne({where:{login: req.body.login}}) === null){
             
             let hashedPassword = bcrypt.hashSync(req.body.password, saltRounds);
-            let roleUser = req.body.role ? req.body.role : 'USER'
+            //let roleUser = req.body.role ? req.body.role : 'USER'
 
             createdUser = await User.create({
                 login: req.body.login,
                 password: hashedPassword,
-                role: roleUser
+                fio: req.body.fio
+                //role: roleUser
             })
             res.json({id: createdUser.id, login: createdUser.login})
         }
@@ -49,7 +50,7 @@ class authController{
         }
         else{
             if(bcrypt.compareSync(req.body.password, findUser.password)){
-                res.json({token: generateAccessToken({login: findUser.login, role: findUser.role})})
+                res.json({token: generateAccessToken({login: findUser.login, role: findUser.role, fio: findUser.fio, id: findUser.id})})
             }
             else{
                 res.status(400).json({errorMessage: 'неверный пароль'})
@@ -58,9 +59,31 @@ class authController{
 
     }
 
-    async getRole(req, res){
+    async getPremissions(req, res){
         let token = req.headers.authorization.split(' ')[1]
-        res.json(jwt.decode(token))
+        let decoded
+        try {
+            decoded = jwt.verify(token, secretJWT)
+        } catch (error) {
+            decoded = {errorMessage: 'не авторизован'}
+            res.status(400).json(decoded)
+        }
+        res.json(decoded)
+        
+    }
+
+    async findUser(req, res){
+        const User = sequalizes.user
+
+        let findUser
+
+        try {
+            findUser = await User.findOne({where:{login: req.query.login}})
+            res.json({id:findUser.id})
+        } catch (error) {
+            res.status(400).json({errorMessage: 'такого пользователя не существует'})
+        }
+  
     }
 }
 
