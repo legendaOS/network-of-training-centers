@@ -1,8 +1,8 @@
 import { Router } from 'express'
 import Controller from './Controller.js'
-import checkCenter from './middlWare.js'
+import checkCenter from './middlware.js'
 
-import middlwareAuth from '../authServer/middleWare.js'
+import middlwareAuth from './middleWareAuth.js'
 
 const router = new Router()
 

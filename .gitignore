@@ -1,1 +1,5 @@
 **/node_modules
+postgres-data-auth/
+postgres-data-centers/
+postgres-data-news/
+postgres-data-schedules/

@@ -1,5 +1,5 @@
 const settings = {
-    portAuthServer : 2000,
+    portAuthServer : 80,
     secretKeyJWT : 'ssdfgUBFIUWincasd-qwef',
     saltRounds : 10
 }

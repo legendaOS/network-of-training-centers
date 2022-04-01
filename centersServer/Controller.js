@@ -4,7 +4,13 @@ class Controller{
 
 
     async test(req, res){
-        res.json({req_headres: req.headers, req_body: req.body, messge :'ok'})
+
+        res.set({
+            "Access-Control-Allow-Headers":"Origin, X-Requested-With, Content-Type, Accept",
+            "Access-Control-Allow-Origin": "*",
+            "haha":"Hehe"
+        }).json({req_headres: req.headers, req_body: req.body, messge :'ok2'})
+
     }
 
     async createCenter(req ,res){

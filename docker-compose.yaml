@@ -1,0 +1,90 @@
+version: "3"
+services:
+
+  db_auth:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "3001:5432"
+    volumes:
+      - ./postgres-data-auth:/var/lib/postgresql/data
+
+  db_centers:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "3002:5432"
+    volumes:
+      - ./postgres-data-centers:/var/lib/postgresql/data
+
+  db_news:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "3003:5432"
+    volumes:
+      - ./postgres-data-news:/var/lib/postgresql/data
+
+  db_schedules:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "3004:5432"
+    volumes:
+      - ./postgres-data-schedules:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 3005:8080
+
+  auth_server:
+    build: ./authServer
+    ports: 
+      - "4000:80"
+    depends_on:
+      - db_auth
+  
+  centers_server:
+    build: ./centersServer
+    ports: 
+      - "4001:80"
+    depends_on:
+      - db_centers
+
+  news_server:
+    build: ./newsServer
+    ports: 
+      - "4002:80"
+    depends_on:
+      - db_news
+    
+  schedules_server:
+    build: ./schedulesServer
+    ports: 
+      - "4003:80"
+    depends_on:
+      - db_schedules
+
+  ui_server:
+    build: ./UIServer
+    ports:
+      - "80:80"
+    depends_on:
+      - gate
+
+  gate:
+    build: ./gate
+    ports:
+      - "5000:80"
+
+  

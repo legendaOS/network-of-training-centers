@@ -1,1 +1,0 @@
-export default {authSrever: 'http://localhost:2000'}
