@@ -29,6 +29,43 @@ class Controller{
 
     }
 
+    async login(req, res){
+
+        axios({
+            method: 'post',
+            url: 'http://auth_server/auth/login',
+            data: {
+              login: req.body.login,
+              password: req.body.password 
+            }
+        })
+        .then(function (responsetok) {
+
+            const token = `Bearer ${responsetok.data.token}`
+
+            // axios.get('http://auth_server/auth/premissions', {
+            //     headers: {
+            //         'Authorization': token
+            //     }
+            // })
+            // .then(function (response) {
+
+            //     res.json(response.data)
+                
+            // })
+            // .catch(function (error) {
+            //     res.status(400).send(error)
+            // })
+
+            res.send(token)
+            
+        })
+        .catch(function (error) {
+            res.status(400).send(error)
+        })
+
+    }
+
 }   
 
 export default new Controller()
