@@ -36,6 +36,16 @@ body{
 #header_right{
     display: flex;
     justify-content: end;
+    align-items: center;
+}
+
+#footer{
+    margin-top: 50px;
+    margin-bottom: 50px;
+    color: #f7f7f7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 
@@ -83,6 +93,64 @@ body{
 #center{
     border-radius: 10px;
 }
+
+#centerInfo{
+    display: flex;
+    flex-wrap: wrap;
+    width: 100vw;
+}
+
+.nameCenter{
+    width: 100%;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.nameCentername{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+    font-size: 40px;
+}
+
+#newsCenter, #shedulesCenter{
+    width: 50%;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.elenemtNews{
+    width:100%;
+    margin-bottom: 40px;
+    font-size: 20px;
+    text-align: center;
+    transition: 200ms;
+}
+
+.elenemtNews:hover{
+    margin-top: 20px;
+    margin-bottom: 50px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.nameincat{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    margin-bottom: 70px;
+    font-size: 30px;
+}
+
+
 
 
 

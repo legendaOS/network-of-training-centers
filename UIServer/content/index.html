@@ -12,16 +12,13 @@
         <div id="header">
 
             <div id="header_left">
-                <span id = "fio"></span>
-                <span class="animated_bot">Новость</span>
-                <span class="animated_bot">Расписание</span>
-                <span class="animated_bot">Центр</span>
+                <span id = "fio">Авторизируйтесь на портале</span>
             </div>
 
             <div id="header_right">
 
-                <input type="text" class = "inp_texts" id = "login">
-                <input type="password" class = "inp_texts" id = "password">
+                <input type="text" class = "inp_texts" id = "login" placeholder="Логин">
+                <input type="password" class = "inp_texts" id = "password" placeholder="Пароль">
                 <span class = 'animated_bot' id = 'login_button'>Войти</span> 
 
             </div>
@@ -29,11 +26,19 @@
         </div>
             
         <div id="content">
+            
+        </div>
 
+        <div id="footer">
+                <input type="text" class = "inp_texts" id = "reg_login" placeholder="Логин">
+                <input type="password" class = "inp_texts" id = "reg_password" placeholder="Пароль">
+                <input type="text" class = "inp_texts" id = "reg_fio" placeholder="Имя">
+                <span class = 'animated_bot' id = 'reg_button'>Регистрация</span>
         </div>
     </div>
 
     <script src="./jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script src="./main.js"></script>
     
