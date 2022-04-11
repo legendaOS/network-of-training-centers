@@ -37,7 +37,7 @@ async function showDataCenter(name){
     for(i of buf.news){
         news += `
         <div class="elenemtNews">
-            ${i.time} ${i.date} <br><br>
+            ${i.time} ${i.date} (${i.id}) <br><br>
             ${i.topic}
         </div>
         `
@@ -46,7 +46,7 @@ async function showDataCenter(name){
     for(i of buf.schedules){
         schedules += `
         <div class="elenemtNews">
-            ${i.time} ${i.date} <br><br>
+            ${i.time} ${i.date} (${i.id})<br><br>
             ${i.topic}
         </div>
         `
@@ -152,6 +152,7 @@ async function login(){
         }
     })
     .then(function (responsetok) {
+        console.log(responsetok.data)
         token_ = responsetok.data.token
         createUserMenu(responsetok.data.fio, responsetok.data.role)
         
@@ -172,13 +173,12 @@ async function createUserMenu(userName, userPremission){
     `
 
     if(userPremission == 'ADMIN'){
-        html_insert += `<span class="animated_bot">Новость</span>
-        <span class="animated_bot">Расписание</span>`
+        html_insert += `<span class="animated_bot" onclick = "createNewsMenu()">Новость</span>
+        <span class="animated_bot" onclick = "createShMenu()">Расписание</span>`
     }
     if(userPremission == 'SUPERUSER'){
-        html_insert += `<span class="animated_bot">Новость</span>
-        <span class="animated_bot">Расписание</span>
-        <span class="animated_bot">Центр</span>`
+        html_insert += `<span class="animated_bot" onclick = "createNewsMenu()">Новость</span>
+        <span class="animated_bot" onclick = "createShMenu()">Расписание</span>`
     }
 
     $('#header_left').html(html_insert)
@@ -229,3 +229,192 @@ async function autorize(){
 }
 
 
+async function deletenews(element){
+    let id_elem = element.parentNode.children[0].value
+    console.log(id_elem)
+
+    console.log(token_)
+
+    await axios({
+        method: 'post',
+        url: 'http://localhost:5000/news_delete',
+        data:{
+            "id":id_elem
+        },
+        headers: {
+            Authorization: token_
+        }
+    })
+    .then(function (response) {
+        let elme = $(element.parentNode)
+        let buf = elme.html()
+        
+        elme.html(buf + 'Удалено')
+
+        setTimeout(()=>{elme.html(buf)}, 3000)
+        
+    })
+    .catch(function (error) {
+        let elme = $(element.parentNode)
+        let buf = elme.html()
+        
+        elme.html(buf + 'Ошибка')
+
+        setTimeout(()=>{elme.html(buf)}, 3000)
+    })
+}
+
+async function addnews(element){
+    let date_elm = element.parentNode.children[0].value
+    let time = element.parentNode.children[1].value
+    let text = element.parentNode.children[2].value
+    let name = element.parentNode.children[3].value
+
+    console.log([date_elm, time, text, name])
+
+    await axios({
+        method: 'post',
+        url: 'http://localhost:5000/news',
+        data:{
+            "center_in":name,
+            "topic":text,
+            "time":time,
+            "date": date_elm
+        },
+        headers: {
+            Authorization: token_
+        }
+    })
+    .then(function (response) {
+        let elme = $(element.parentNode)
+        let buf = elme.html()
+        
+        elme.html(buf + 'Создано')
+
+        setTimeout(()=>{elme.html(buf)}, 3000)
+        
+    })
+    .catch(function (error) {
+        let elme = $(element.parentNode)
+        let buf = elme.html()
+        
+        elme.html(buf + 'Ошибка')
+
+        setTimeout(()=>{elme.html(buf)}, 3000)
+    })
+}
+
+async function createNewsMenu(){
+    let ht = `  <div class="panel">
+                    <span class = 'animated_bot' id = '' onclick = "createMain()">Назад</span>
+                    <div class="deletionelement">
+                        <input type="text" placeholder="id"> 
+                        <span class = 'animated_bot' onclick = 'deletenews(this)'>Удалить</span>
+                    </div>
+                    <div class="addelement">
+                        <input type="date">
+                        <input type="time">
+                        <input type="text" class="added_text">
+                        <input type="text" placeholder="Название центра">
+                        <span class = 'animated_bot' onclick = 'addnews(this)'>Добавить</span>
+                    </div>
+                </div>`
+
+
+    $('#content').html(ht)
+}
+
+async function createShMenu(){
+    let ht = `  <div class="panel">
+                    <span class = 'animated_bot' id = '' onclick = "createMain()">Назад</span>
+                    <div class="deletionelement">
+                        <input type="text" placeholder="id"> 
+                        <span class = 'animated_bot' onclick = 'deleteSh(this)'>Удалить</span>
+                    </div>
+                    <div class="addelement">
+                        <input type="date">
+                        <input type="time">
+                        <input type="text" class="added_text">
+                        <input type="text" placeholder="Название центра">
+                        <span class = 'animated_bot' onclick = 'addSh(this)'>Добавить</span>
+                    </div>
+                </div>`
+
+
+    $('#content').html(ht)
+}
+
+async function deleteSh(element){
+    let id_elem = element.parentNode.children[0].value
+    console.log(id_elem)
+
+    console.log(token_)
+
+    await axios({
+        method: 'post',
+        url: 'http://localhost:5000/shedules_delete',
+        data:{
+            "id":id_elem
+        },
+        headers: {
+            Authorization: token_
+        }
+    })
+    .then(function (response) {
+        let elme = $(element.parentNode)
+        let buf = elme.html()
+        
+        elme.html(buf + 'Удалено')
+
+        setTimeout(()=>{elme.html(buf)}, 3000)
+        
+    })
+    .catch(function (error) {
+        let elme = $(element.parentNode)
+        let buf = elme.html()
+        
+        elme.html(buf + 'Ошибка')
+
+        setTimeout(()=>{elme.html(buf)}, 3000)
+    })
+}
+
+async function addSh(element){
+    let date_elm = element.parentNode.children[0].value
+    let time = element.parentNode.children[1].value
+    let text = element.parentNode.children[2].value
+    let name = element.parentNode.children[3].value
+
+    console.log([date_elm, time, text, name])
+
+    await axios({
+        method: 'post',
+        url: 'http://localhost:5000/shedules',
+        data:{
+            "center_in":name,
+            "topic":text,
+            "time":time,
+            "date": date_elm
+        },
+        headers: {
+            Authorization: token_
+        }
+    })
+    .then(function (response) {
+        let elme = $(element.parentNode)
+        let buf = elme.html()
+        
+        elme.html(buf + 'Создано')
+
+        setTimeout(()=>{elme.html(buf)}, 3000)
+        
+    })
+    .catch(function (error) {
+        let elme = $(element.parentNode)
+        let buf = elme.html()
+        
+        elme.html(buf + 'Ошибка')
+
+        setTimeout(()=>{elme.html(buf)}, 3000)
+    })
+}

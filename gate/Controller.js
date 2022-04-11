@@ -7,9 +7,11 @@ class Controller{
 
         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
 
-        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+        //res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
 
         res.setHeader('Access-Control-Allow-Credentials', true);
+
+        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
 
         next()
     }
@@ -132,6 +134,110 @@ class Controller{
         })
         .catch(function (error) {
             res.status(400).json()
+        })
+    }
+
+    async autorizeAdmin(req, res, next){
+        await axios({
+            url:'http://auth_server/auth/premissions',
+            method: 'get',
+            headers:{
+                'authorization': req.headers.authorization
+            }
+        })
+        .then((response) =>{
+            let roles = ['SUPERUSER', 'ADMIN']
+            let myRole = response.data['role']
+
+            if (response.status == 200){
+                if(roles.indexOf(myRole) != -1){
+                    next()
+                }
+                else{
+                    res.status(406).json({errorMessage: 'недостаточно прав'})
+                }
+            }
+        })
+        .catch((error) =>{
+            res.status(407).json({errorMessage: 'не авторизован'})
+        })
+    }
+
+    async deleteNews(req, res){
+
+        axios.delete('http://news_server/delete', {
+            headers: {
+              Authorization: req.headers.authorization
+            },
+            data: {
+              id: req.body.id
+            }
+          })
+          .then(function (response) {
+
+            res.json()
+            
+        })
+        .catch(function (error) {
+            res.status(400).json(error)
+        })
+    }
+
+    async addNews(req, res){
+        axios({
+            method: 'post',
+            url: 'http://news_server/create',
+            data: req.body,
+            headers: {
+                Authorization: req.headers.authorization
+              }
+        })
+        .then(function (response) {
+
+            res.json(response.data)
+            
+        })
+        .catch(function (error) {
+            res.status(400).json(error)
+        })
+    }
+
+    async deleteShedlues(req, res){
+
+        axios.delete('http://schedules_server/delete', {
+            headers: {
+              Authorization: req.headers.authorization
+            },
+            data: {
+              id: req.body.id
+            }
+          })
+          .then(function (response) {
+
+            res.json()
+            
+        })
+        .catch(function (error) {
+            res.status(400).json(error)
+        })
+    }
+
+    async addShedlues(req, res){
+        axios({
+            method: 'post',
+            url: 'http://schedules_server/create',
+            data: req.body,
+            headers: {
+                Authorization: req.headers.authorization
+              }
+        })
+        .then(function (response) {
+
+            res.json(response.data)
+            
+        })
+        .catch(function (error) {
+            res.status(400).json(error)
         })
     }
 

@@ -22,10 +22,6 @@ function defineShema(sequelize){
           center_in:{
             type: DataTypes.STRING,
             allowNull: false,
-          },
-          text:{
-            type: DataTypes.STRING,
-            allowNull: false,
           }
         },
         {
