@@ -11,5 +11,6 @@ router.post('/create', middleWare.autorizeSuperuser, Controller.createCenter)
 router.get('/', Controller.getAll)
 router.put('/change', middleWare.autorizeSuperuser , Controller.changeCenter)  
 router.get('/find', Controller.getOne)
+router.delete('/center', middleWare.autorizeSuperuser, Controller.deleteCenter)
 
 export default router

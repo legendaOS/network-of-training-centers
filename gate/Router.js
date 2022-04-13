@@ -14,7 +14,13 @@ router.post('/news_delete', Controller.disableCORS, Controller.deleteNews)
 router.post('/news', Controller.disableCORS, Controller.addNews)
 router.post('/shedules_delete', Controller.disableCORS, Controller.deleteShedlues)
 router.post('/shedules', Controller.disableCORS, Controller.addShedlues)
+router.post('/center', Controller.disableCORS, Controller.addCenter)
+router.post('/center_delete', Controller.disableCORS, Controller.deleteCenter)
+router.post('/center_change', Controller.disableCORS, Controller.changeCenter)
 
+router.post('/application', Controller.disableCORS, Controller.createApplication) //{header.token{user}, body.id_schedules}
+router.get('/applications/:name', Controller.disableCORS, Controller.getApplications) //{header.token(admin+)}
+router.delete('/application', Controller.disableCORS, Controller.deleteApplication) //{header.token(admin+), body.id}
 
 
 

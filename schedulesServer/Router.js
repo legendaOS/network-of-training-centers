@@ -10,5 +10,6 @@ router.post('/test', Controller.test)
 router.post('/create', middlwareAuth.autorizeAdmin, checkCenter, Controller.create)
 router.delete('/delete',middlwareAuth.autorizeAdmin, Controller.delete)
 router.post('/', checkCenter, Controller.getAllInCenter)
+router.get('/:id', Controller.getOne)
 
 export default router

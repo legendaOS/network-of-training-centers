@@ -11,8 +11,8 @@ function defineShema(sequelize){
             type: DataTypes.INTEGER,
             allowNull: false,
           },
-          id_user: {
-            type: DataTypes.INTEGER,
+          user_name: {
+            type: DataTypes.STRING,
             allowNull: false,
           }
           

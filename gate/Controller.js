@@ -163,6 +163,32 @@ class Controller{
         })
     }
 
+    async autorizeUser(req, res, next){
+        await axios({
+            url:'http://auth_server/auth/premissions',
+            method: 'get',
+            headers:{
+                'authorization': req.headers.authorization
+            }
+        })
+        .then((response) =>{
+            let roles = ['SUPERUSER', 'ADMIN', 'USER']
+            let myRole = response.data['role']
+
+            if (response.status == 200){
+                if(roles.indexOf(myRole) != -1){
+                    next()
+                }
+                else{
+                    res.status(406).json({errorMessage: 'недостаточно прав'})
+                }
+            }
+        })
+        .catch((error) =>{
+            res.status(407).json({errorMessage: 'не авторизован'})
+        })
+    }
+
     async deleteNews(req, res){
 
         axios.delete('http://news_server/delete', {
@@ -230,6 +256,167 @@ class Controller{
             headers: {
                 Authorization: req.headers.authorization
               }
+        })
+        .then(function (response) {
+
+            res.json(response.data)
+            
+        })
+        .catch(function (error) {
+            res.status(400).json(error)
+        })
+    }
+
+    async addCenter(req, res){
+        axios({
+            method: 'post',
+            url: 'http://centers_server/create',
+            data: req.body,
+            headers: {
+                Authorization: req.headers.authorization
+              }
+        })
+        .then(function (response) {
+
+            res.json(response.data)
+            
+        })
+        .catch(function (error) {
+            res.status(400).json(error)
+        })
+    }
+
+    async deleteCenter(req, res){
+        axios.delete('http://centers_server/center', {
+            headers: {
+              Authorization: req.headers.authorization
+            },
+            data: req.body
+          })
+          .then(function (response) {
+
+            res.json(response.data)
+            
+        })
+        .catch(function (error) {
+            res.status(400).json(error)
+        })
+    }
+
+    async changeCenter(req, res){
+        axios({
+            method: 'put',
+            url: 'http://centers_server/change',
+            data: req.body,
+            headers: {
+                Authorization: req.headers.authorization
+              }
+        })
+        .then(function (response) {
+
+            res.json(response.data)
+            
+        })
+        .catch(function (error) {
+            res.status(400).json(error)
+        })
+    }
+
+    async createApplication(req, res){
+
+        let fio_user 
+
+        await axios({
+            method: 'get',
+            url: 'http://auth_server/auth/premissions',
+            headers: {
+                Authorization: req.headers.authorization
+              }
+        })
+        .then(function (response) {
+
+            fio_user = response.data.fio
+            
+        })
+        .catch(function (error) {
+            res.status(400).json(error)
+        })
+
+        await axios({
+            method: 'post',
+            url: 'http://applications_server/create',
+            data: {
+                id_schedules: req.body.id_schedules,
+                user_name: fio_user
+            },
+            headers: {
+                Authorization: req.headers.authorization
+            }
+        })
+        .then(function (response) {
+
+            res.json(response.data)
+            
+        })
+        .catch(function (error) {
+            res.status(400).json(error)
+        })
+
+
+        
+    }
+
+    async getApplications(req, res){
+
+        let name = req.params.name
+
+        let uri = encodeURI(`http://applications_server/applications/${name}`)
+
+        let applications
+
+        let result = []
+
+
+        await axios({
+            method: 'get',
+            url: uri,
+            headers: {
+                Authorization: req.headers.authorization
+              }
+        })
+        .then(function (response) {
+
+            applications = response.data
+            
+        })
+        .catch(function (error) {
+            res.status(400).json(error)
+        })
+
+        for(let elm of applications){
+            await axios.get(encodeURI(`http://schedules_server/${elm.id_schedules}`))
+            .then(function (re) {
+                let r = re.data
+                result.push({id: elm.id, date: r.date, time: r.time, center_in: r.center_in, topic:r.topic, fio: elm.user_name})
+            })
+            .catch(function(){})
+        }
+
+        res.json(result)
+        
+        
+    }
+
+    async deleteApplication(req, res){
+        await axios({
+            method: 'delete',
+            url: 'http://applications_server/application',
+            data: {
+                id: req.body.id
+            },
+            headers: {
+                Authorization: req.headers.authorization
+            }
         })
         .then(function (response) {
 

@@ -85,6 +85,25 @@ class Controller{
         }
         
     }
+
+    async deleteCenter(req, res){
+        const Center = seqAndModel.modl
+
+        let result 
+
+        try {
+            result = await Center.findOne({where:{name: req.body.name}})
+        } catch (error) {
+            res.status(400).json({errorMessage: 'центр с таким именем не найден'})
+        }
+
+        try {
+            await result.destroy()
+            res.json(result)
+        } catch (error) {
+            res.status(400).json({errorMessage: 'невозможно удалить'})
+        }
+    }
 }
 
 export default new Controller()

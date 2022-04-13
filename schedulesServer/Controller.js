@@ -49,6 +49,20 @@ class Controller{
 
     }
 
+    async getOne(req, res){
+        const Schedule = seqAndModel.modl
+
+        let result
+        
+        try {
+            result = await Schedule.findOne({where:{id: req.params.id}})
+        } catch (error) {
+            res.status(400).json(error)            
+        }
+
+        res.json(result)
+    }
+
 }
 
 export default new Controller()

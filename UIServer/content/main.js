@@ -178,7 +178,8 @@ async function createUserMenu(userName, userPremission){
     }
     if(userPremission == 'SUPERUSER'){
         html_insert += `<span class="animated_bot" onclick = "createNewsMenu()">Новость</span>
-        <span class="animated_bot" onclick = "createShMenu()">Расписание</span>`
+        <span class="animated_bot" onclick = "createShMenu()">Расписание</span>
+        <span class="animated_bot" onclick = "centerMenu()">Центры</span>`
     }
 
     $('#header_left').html(html_insert)
@@ -417,4 +418,145 @@ async function addSh(element){
 
         setTimeout(()=>{elme.html(buf)}, 3000)
     })
+}
+
+async function deleteCenter(element){
+    let name_element = element.parentNode.children[0].value
+
+    console.log(name_element)
+
+    await axios({
+        method: 'post',
+        url: 'http://localhost:5000/center_delete',
+        data:{
+            "name":name_element
+        },
+        headers: {
+            Authorization: token_
+        }
+    })
+    .then(function (response) {
+        let elme = $(element.parentNode)
+        let buf = elme.html()
+        
+        elme.html(buf + 'Удалено')
+
+        setTimeout(()=>{elme.html(buf)}, 3000)
+        
+    })
+    .catch(function (error) {
+        let elme = $(element.parentNode)
+        let buf = elme.html()
+        
+        elme.html(buf + 'Ошибка')
+
+        setTimeout(()=>{elme.html(buf)}, 3000)
+    })
+}
+
+async function addCenter(element){
+
+    let adress_element = element.parentNode.children[0].value
+    let info_element = element.parentNode.children[1].value
+    let name_element = element.parentNode.children[2].value
+
+
+    console.log([name_element, adress_element, info_element])
+
+    await axios({
+        method: 'post',
+        url: 'http://localhost:5000/center',
+        data:{
+            "name":name_element,
+            "adress":adress_element,
+            "info":info_element
+        },
+        headers: {
+            Authorization: token_
+        }
+    })
+    .then(function (response) {
+        let elme = $(element.parentNode)
+        let buf = elme.html()
+        
+        elme.html(buf + 'Создан')
+
+        setTimeout(()=>{elme.html(buf)}, 3000)
+        
+    })
+    .catch(function (error) {
+        let elme = $(element.parentNode)
+        let buf = elme.html()
+        
+        elme.html(buf + 'Ошибка')
+
+        setTimeout(()=>{elme.html(buf)}, 3000)
+    })
+}
+
+async function changeCenter(element){
+
+    let adress_element = element.parentNode.children[0].value
+    let info_element = element.parentNode.children[1].value
+    let name_element = element.parentNode.children[2].value
+
+
+    console.log([name_element, adress_element, info_element])
+
+    await axios({
+        method: 'post',
+        url: 'http://localhost:5000/center_change',
+        data:{
+            "name":name_element,
+            "adress":adress_element,
+            "info":info_element
+        },
+        headers: {
+            Authorization: token_
+        }
+    })
+    .then(function (response) {
+        let elme = $(element.parentNode)
+        let buf = elme.html()
+        
+        elme.html(buf + 'Изменен')
+
+        setTimeout(()=>{elme.html(buf)}, 3000)
+        
+    })
+    .catch(function (error) {
+        let elme = $(element.parentNode)
+        let buf = elme.html()
+        
+        elme.html(buf + 'Ошибка')
+
+        setTimeout(()=>{elme.html(buf)}, 3000)
+    })
+}
+
+async function centerMenu(){
+    let html = `
+            <div class="panel">
+                <span class = 'animated_bot' id = '' onclick = "createMain()">Назад</span>
+                <div class="deletionelement">
+                    <input style="width:300px" type="text" placeholder="Название центра"> 
+                    <span class = 'animated_bot' onclick="deleteCenter(this)">Удалить</span>
+                </div>
+                <div class="addelement">
+                    <input type="text" class="added_text" placeholder = 'Адрес центра'>
+                    <input type="text" class="added_text" placeholder = 'Информация центра'>
+                    <input type="text" placeholder="Название центра">
+                    <span class = 'animated_bot' onclick="addCenter(this)">Добавить</span>
+                </div>
+                <br><br>
+                <div class="addelement">
+                    <input type="text" class="added_text" placeholder = 'Адрес центра'>
+                    <input type="text" class="added_text" placeholder = 'Информация центра'>
+                    <input type="text" placeholder="Название центра">
+                    <span class = 'animated_bot' onclick="changeCenter(this)">Обновить</span>
+                </div>
+            </div>
+    `
+
+    $("#content").html(html)
 }
