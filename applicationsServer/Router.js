@@ -8,6 +8,7 @@ const router = new Router()
 router.post('/test', Controller.test)
 router.post('/create', middlwareAuth.autorizeUser, Controller.create)
 router.get('/applications/:name', middlwareAuth.autorizeAdmin, Controller.getByName)
+router.get('/applications', middlwareAuth.autorizeAdmin, Controller.getAll)
 router.delete('/application', middlwareAuth.autorizeAdmin, Controller.deleteAppl)
 
 

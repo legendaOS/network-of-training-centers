@@ -368,9 +368,7 @@ class Controller{
 
     async getApplications(req, res){
 
-        let name = req.params.name
-
-        let uri = encodeURI(`http://applications_server/applications/${name}`)
+        let uri = encodeURI(`http://applications_server/applications`)
 
         let applications
 
@@ -411,6 +409,64 @@ class Controller{
         await axios({
             method: 'delete',
             url: 'http://applications_server/application',
+            data: {
+                id: req.body.id
+            },
+            headers: {
+                Authorization: req.headers.authorization
+            }
+        })
+        .then(function (response) {
+
+            res.json(response.data)
+            
+        })
+        .catch(function (error) {
+            res.status(400).json(error)
+        })
+    }
+
+    async getAllUsers(req, res){
+        await axios.get(encodeURI(`http://auth_server/auth/users`),{
+            headers:{
+                authorization: req.headers.authorization
+            }
+        })
+        .then(function (re) {
+            res.json(re.data)
+        })
+        .catch(function(er){
+            res.status(410).json(er)
+        })
+
+    }
+
+    async changeUser(req, res){
+        await axios({
+            method: 'patch',
+            url: 'http://auth_server/auth/user',
+            data: {
+                id: req.body.id,
+                role: req.body.role
+            },
+            headers: {
+                Authorization: req.headers.authorization
+            }
+        })
+        .then(function (response) {
+
+            res.json(response.data)
+            
+        })
+        .catch(function (error) {
+            res.status(400).json(error)
+        })
+    }
+
+    async deleteUser(req, res){
+        await axios({
+            method: 'delete',
+            url: 'http://auth_server/auth/user',
             data: {
                 id: req.body.id
             },

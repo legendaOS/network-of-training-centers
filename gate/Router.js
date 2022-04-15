@@ -19,10 +19,12 @@ router.post('/center_delete', Controller.disableCORS, Controller.deleteCenter)
 router.post('/center_change', Controller.disableCORS, Controller.changeCenter)
 
 router.post('/application', Controller.disableCORS, Controller.createApplication) //{header.token{user}, body.id_schedules}
-router.get('/applications/:name', Controller.disableCORS, Controller.getApplications) //{header.token(admin+)}
+router.get('/applications', Controller.disableCORS, Controller.getApplications) //{header.token(admin+)}
 router.delete('/application', Controller.disableCORS, Controller.deleteApplication) //{header.token(admin+), body.id}
 
-
+router.get('/users', Controller.disableCORS, Controller.getAllUsers)        //{header.token(superuser)
+router.patch('/user', Controller.disableCORS, Controller.changeUser)        //{header.token(superuser) body.id,role}
+router.delete('/user', Controller.disableCORS, Controller.deleteUser)       //{header.token(superuser) body.id}
 
 export default router
 

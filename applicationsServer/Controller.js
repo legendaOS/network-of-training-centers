@@ -50,6 +50,19 @@ class Controller{
             res.status(400).json({errorMessage: 'удалить не вышло'})
         }
     }
+
+    async getAll(req, res){
+        const Application = seqAndModel.modl
+
+        let result
+
+        try {
+            result = await Application.findAll()
+            res.json(result)
+        } catch (error) {
+            res.status(400).json({errorMessage: 'не вышло'})
+        }
+    }
     
 
    

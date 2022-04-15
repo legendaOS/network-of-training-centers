@@ -97,6 +97,59 @@ class authController{
         }
   
     }
+
+    async changeUser(req, res){
+
+        const User = sequalizes.user
+
+        let usr
+
+        try {
+            usr = await User.findOne({where:{id: req.body.id}})
+
+        } catch (error) {
+            res.status(400).json({errorMessage: 'такого пользователя не существует'})
+        }
+
+        try {
+            usr.role = req.body.role
+            await usr.save()
+            
+            res.json(usr)
+
+        } catch (error) {
+            res.status(400).json({errorMessage: 'такого пользователя не существует'})
+        }
+
+    }
+
+    async findAll(req, res){
+        const User = sequalizes.user
+
+        try {
+            let findUser = await User.findAll()
+            res.json(findUser)
+        } catch (error) {
+            res.status(400).json({errorMessage: 'что то пошло не так'})
+        }
+    }
+
+    async deleteUser(req ,res){
+        const User = sequalizes.user
+
+        let usr
+
+        try {
+            usr = await User.findOne({where:{id: req.body.id}})
+
+            await usr.destroy()
+
+            res.status(204).json()
+
+        } catch (error) {
+            res.status(400).json({errorMessage: 'такого пользователя не существует'})
+        }
+    }
 }
 
 export default new authController()

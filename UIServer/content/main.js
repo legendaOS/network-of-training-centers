@@ -2,7 +2,7 @@ var token_;
 
 $(document).ready(async function () {
 
-    await createMain()
+    //await createMain()
 
     $("#login_button").click(function (e) { 
         login()
@@ -13,6 +13,110 @@ $(document).ready(async function () {
     });
 
 });
+
+async function createApplication(element){
+    let el = $(element.parentNode.children[0])
+    let num = el.html()
+    console.log(num)
+
+    axios({
+        method: 'post',
+        headers:{
+            authorization: token_
+        },
+        url: 'http://localhost:5000/application',
+        data:{
+            id_schedules: num
+        }
+    })
+    .then(function (response) {
+        console.log(response.data)
+
+        let buf = $(element).html()
+        $(element).html(buf + ' Успешно')
+
+        setTimeout(()=>{$(element).html(buf)}, 3000)
+    })
+    .catch(function (error) {
+        console.log(error)
+
+        let buf = $(element).html()
+        $(element).html(buf + ' Ошибка')
+
+        setTimeout(()=>{$(element).html(buf)}, 3000)
+    })
+}
+
+async function deleteApplication(element){
+    let el = element.parentNode.parentNode
+    let num = $(el.children[0]).html()
+    //$(el).fadeOut();
+    console.log(num)
+
+    await axios.delete(`http://localhost:5000/application`, {headers:{authorization: token_},
+        data:{
+            id: num
+        }})
+        .then(function (response) {
+            $(el).fadeOut();
+            
+        })
+        .catch(function (error) {
+            $(element).html(Ошибка)
+        })
+}
+
+async function getApplications(){
+
+    let buf 
+
+    await axios.get(`http://localhost:5000/applications`, {headers:{authorization: token_}})
+        .then(function (response) {
+            
+            buf = response.data
+        })
+        .catch(function (error) {
+            buf = []
+        })
+
+    console.log(buf)
+
+    let elem_appls_html = ''
+
+    for(element of buf){
+        elem_appls_html += `<tr class="element_applications">
+                                <td class="into_element_applications">${element.id}</td>
+                                <td class="into_element_applications">${element.date}</td>
+                                <td class="into_element_applications">${element.time}</td>
+                                <td class="into_element_applications">${element.center_in}</td>
+                                <td class="into_element_applications">${element.fio}</td>
+                                <td class="into_element_applications">${element.topic}</td>
+                                <td class="into_element_applications">
+                                    <span class = 'animated_bot' id = '' onclick = "deleteApplication(this)">Удалить</span>
+                                </td>
+                            </tr>`
+    }
+
+    let html = `<div id = 'usersl'><span class = 'animated_bot' id = '' onclick = "createMain()">Назад</span></div>
+                <table id="applications">
+
+
+                    <tr class="element_applications">
+                        <td class="into_element_applications">ID</td>
+                        <td class="into_element_applications">Дата</td>
+                        <td class="into_element_applications">Время</td>
+                        <td class="into_element_applications">Центр</td>
+                        <td class="into_element_applications">Имя</td>
+                        <td class="into_element_applications">Название</td>
+                        <td class="into_element_applications">Действие</td>
+                    </tr>
+
+                    ${elem_appls_html}
+
+                </table>`
+
+    $("#content").html(html)
+}
 
 
 async function showDataCenter(name){
@@ -37,7 +141,7 @@ async function showDataCenter(name){
     for(i of buf.news){
         news += `
         <div class="elenemtNews">
-            ${i.time} ${i.date} (${i.id}) <br><br>
+            ${i.time} ${i.date} (<span>${i.id}</sapn>) <br><br>
             ${i.topic}
         </div>
         `
@@ -46,8 +150,9 @@ async function showDataCenter(name){
     for(i of buf.schedules){
         schedules += `
         <div class="elenemtNews">
-            ${i.time} ${i.date} (${i.id})<br><br>
-            ${i.topic}
+            ${i.time} ${i.date} (<span>${i.id}</span>)<br><br>
+            ${i.topic} <br><br>
+            <span class = 'animated_bot' onclick = 'createApplication(this)'>Записаться</span>
         </div>
         `
     }
@@ -165,6 +270,137 @@ async function login(){
     $("#password").val('')
 }
 
+async function deleteUser(element){
+    let parent = $(element.parentNode.parentNode)
+    let num = $(element.parentNode.parentNode.children[0]).html()
+
+    await axios.delete(`http://localhost:5000/user`, {headers:{authorization: token_},
+        data:{
+            id: num
+        }})
+        .then(function (response) {
+            $(parent).fadeOut();
+            
+        })
+        .catch(function (error) {
+            $(parent).html(Ошибка)
+        })
+}
+
+async function UPUser(element){
+    let parent = $(element.parentNode.parentNode)
+    let num = $(element.parentNode.parentNode.children[0]).html()
+    let role = $(element.parentNode.parentNode.children[3]).html()
+
+    
+
+    let roles = ['USER', 'ADMIN', 'SUPERUSER']
+
+    let newRole = roles.indexOf(role) + 1
+    newRole = newRole > 2 ? roles[2] : roles[newRole]
+
+    let statusOrRole = await changeRole(num, newRole)
+
+    if (statusOrRole){
+        element.parentNode.parentNode.children[3].innerHTML = statusOrRole
+    }
+    
+
+}
+
+async function DOWNUser(element){
+    let parent = $(element.parentNode.parentNode)
+    let num = $(element.parentNode.parentNode.children[0]).html()
+    let role = $(element.parentNode.parentNode.children[3]).html()
+
+    let roles = ['USER', 'ADMIN', 'SUPERUSER']
+
+    let newRole = roles.indexOf(role) - 1
+    newRole = newRole > 0 ? roles[newRole] : roles[0]
+
+    let statusOrRole = await changeRole(num, newRole)
+
+    if (statusOrRole){
+        element.parentNode.parentNode.children[3].innerHTML = statusOrRole
+    }
+}
+
+
+async function changeRole(id, newRole){
+
+    await axios({
+        method: 'patch',
+        url: 'http://localhost:5000/user',
+        data:{
+            "id":id,
+            "role": newRole
+        },
+        headers: {
+            Authorization: token_
+        }
+    })
+    .then(function (response) {
+        
+    })
+    .catch(function (error) {
+        
+    })
+
+    return newRole
+}
+
+
+async function usersSudoMenu(){
+
+    let bufhtml = ''
+    await axios.get(`http://localhost:5000/users`, {headers:{authorization: token_}})
+    .then(function (response) {
+
+        console.log(response.data)
+        
+        for(element of response.data){
+
+            bufhtml += `<tr class="elementSudoMenu">
+                            <td class="blockSudoMenu">${element.id}</td>
+                            <td class="blockSudoMenu">${element.fio}</td>
+                            <td class="blockSudoMenu">${element.login}</td>
+                            <td class="blockSudoMenu">${element.role}</td>
+                            <td class="blockSudoMenu">
+                                <span class = 'animated_bot' id = '' onclick = "deleteUser(this)">Удалить</span>
+                            </td>
+                            <td class="blockSudoMenu">
+                                <span class = 'animated_bot' id = '' onclick = "UPUser(this)">&#8593;</span>
+                                <span class = 'animated_bot' id = '' onclick = "DOWNUser(this)">&#8595;</span>
+                            </td>
+                        </tr>`
+
+        }
+    })
+    .catch(function (error) {
+        bufhtml = ''
+    })
+
+    let html = `<div id = 'usersl'><span class = 'animated_bot' id = '' onclick = "createMain()">Назад</span></div>
+        <table id="usersSudoMenu">
+
+                    
+
+                    <tr class="elementSudoMenu">
+                        <td class="blockSudoMenu">ID</td>
+                        <td class="blockSudoMenu">Имя</td>
+                        <td class="blockSudoMenu">Login</td>
+                        <td class="blockSudoMenu">Роль</td>
+                        <td class="blockSudoMenu">Удалить</td>
+                        <td class="blockSudoMenu">Роль</td>
+                    </div>
+
+                    ${bufhtml}
+
+                </tr>`
+    
+    $("#content").html(html)
+    
+}
 
   
 async function createUserMenu(userName, userPremission){
@@ -174,12 +410,16 @@ async function createUserMenu(userName, userPremission){
 
     if(userPremission == 'ADMIN'){
         html_insert += `<span class="animated_bot" onclick = "createNewsMenu()">Новость</span>
-        <span class="animated_bot" onclick = "createShMenu()">Расписание</span>`
+        <span class="animated_bot" onclick = "createShMenu()">Расписание</span>
+        <span class="animated_bot" onclick = "getApplications()">Записи</span>
+        `
     }
     if(userPremission == 'SUPERUSER'){
         html_insert += `<span class="animated_bot" onclick = "createNewsMenu()">Новость</span>
         <span class="animated_bot" onclick = "createShMenu()">Расписание</span>
-        <span class="animated_bot" onclick = "centerMenu()">Центры</span>`
+        <span class="animated_bot" onclick = "centerMenu()">Центры</span>
+        <span class="animated_bot" onclick = "getApplications()">Записи</span>
+        <span class="animated_bot" onclick = "usersSudoMenu()">Пользователи</span>`
     }
 
     $('#header_left').html(html_insert)
