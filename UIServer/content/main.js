@@ -2,7 +2,7 @@ var token_;
 
 $(document).ready(async function () {
 
-    //await createMain()
+    await createMain()
 
     $("#login_button").click(function (e) { 
         login()

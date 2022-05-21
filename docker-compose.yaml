@@ -96,8 +96,6 @@ services:
     build: ./UIServer
     ports:
       - "80:80"
-    depends_on:
-      - gate
 
   gate:
     build: ./gate
